@@ -29,14 +29,13 @@ final class KavenegarTransportFactory extends AbstractTransportFactory
     public function create(Dsn $dsn): TransportInterface
     {
         $scheme = $dsn->getScheme();
-        $accountSid = $this->getUser($dsn);
-        $authToken = $this->getPassword($dsn);
+        $api_key = $dsn->getOption('api_key');
         $from = $dsn->getOption('from');
         $host = 'default' === $dsn->getHost() ? null : $dsn->getHost();
         $port = $dsn->getPort();
 
         if ('kavenegar' === $scheme) {
-            return (new KavenegarTransport($accountSid, $authToken, $from, $this->client, $this->dispatcher))->setHost($host)->setPort($port);
+            return (new KavenegarTransport($api_key, $from, $this->client, $this->dispatcher))->setHost($host)->setPort($port);
         }
 
         throw new UnsupportedSchemeException($dsn, 'kavenegar', $this->getSupportedSchemes());
