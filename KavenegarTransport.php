@@ -55,18 +55,21 @@ final class KavenegarTransport extends AbstractTransport
         if (!$this->supports($message)) {
             throw new LogicException(sprintf('The "%s" transport only supports instances of "%s" (instance of "%s" given).', __CLASS__, SmsMessage::class, get_debug_type($message)));
         }
-
+        
         $endpoint = sprintf('https://%s/v1/%s/sms/send.json/', $this->getEndpoint(), $this->apiKey);
-        $params = array(
-            "receptor" => $message->getPhone(),
-            "sender" => $this->from,
-            "message" => $message->getSubject()
-        );
-        $response = $this->client->request('POST', $endpoint, ['query' => $params]);
+        
+        $response = $this->client->request('POST', $endpoint, [
+            'query' => [
+                'receptor' => $message->getPhone(),
+                'sender' => $this->from,
+                'message' => $message->getSubject(),
+            ],
+        ]);
 
         $return = $response->toArray(false)['return'];
         if (200 !== $response->getStatusCode() || 200 !== $return['status']) {
             $message = $return['message'] || '';
+
             throw new TransportException('Unable to send the SMS: '.$message, $response);
         }
     }
