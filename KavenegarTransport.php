@@ -42,7 +42,7 @@ final class KavenegarTransport extends AbstractTransport
 
     public function __toString(): string
     {
-        return sprintf('kavenegar://%s?from=%s&api_key=%s', $this->getEndpoint(), $this->from, $this->apiKey);
+        return sprintf('kavenegar://%s?from=%s', $this->getEndpoint(), $this->from);
     }
 
     public function supports(MessageInterface $message): bool
